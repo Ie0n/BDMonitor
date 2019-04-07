@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_cpu"
+            android:icon="@drawable/ic_menu_cpu"
+            android:title="服务器信息" />
+        <item
+            android:id="@+id/nav_io"
+            android:icon="@drawable/ic_menu_io"
+            android:title="I/O" />
+        <item
+            android:id="@+id/nav_memo"
+            android:icon="@drawable/ic_menu_memo"
+            android:title="集群指标" />
+        <item
+            android:id="@+id/nav_task"
+            android:icon="@drawable/ic_menu_task"
+            android:title="服务器节点信息" />
+        <item
+            android:id="@+id/nav_internet"
+            android:icon="@drawable/ic_menu_internet"
+            android:title="网络" />
+        <item
+            android:id="@+id/nav_log"
+            android:icon="@drawable/ic_menu_log"
+            android:title="日志" />
+    </group>
+
+
+</menu>
