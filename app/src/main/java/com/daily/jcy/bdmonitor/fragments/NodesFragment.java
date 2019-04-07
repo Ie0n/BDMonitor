@@ -81,50 +81,6 @@ public class NodesFragment extends Fragment {
 
     }
     public void getData(String url) {
-        Request request = new Request.Builder().url(url).build();
-        final OkHttpClient client = new OkHttpClient();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("fail","获取数据失败");
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.body() != null && response.isSuccessful()) {
-
-                    String result = response.body().string();
-                    Log.d("Result: ",result);
-
-
-
-//                    JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-//                    JsonArray s = jsonObject.get("node").getAsJsonArray();
-//                    Log.d("JsonArray: ",s.getAsString());
-                    JsonArray s =  new JsonParser().parse(result).getAsJsonArray();
-
-                    Gson gson = new Gson();
-                    nodeList = new ArrayList<>();
-
-                    //加强for循环遍历JsonArray
-                    for (JsonElement Node : s) {
-                        //使用GSON，直接转成Bean对象
-                        node node = gson.fromJson(Node, node.class);
-                        nodeList.add(node);
-                        Log.d("node: ",node.toString());
-                    }
-
-                    //recyclerView.setAdapter(new NodesAdapter(mContext, nodeList));
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    });
-                }
-            }
-        });
     }
 }
