@@ -3,13 +3,13 @@ package com.daily.jcy.bdmonitor.bean;
 import java.util.List;
 
 public class Nodes {
-    private List<node> nodes;
+    private List<Node> Nodes;
 
-    public List<node> getNodes() {
-        return nodes;
+    public List<Node> getNodes() {
+        return Nodes;
     }
 
-    public void setNodes(List<node> nodes) {
-        this.nodes = nodes;
+    public void setNodes(List<Node> Nodes) {
+        this.Nodes = Nodes;
     }
 }
