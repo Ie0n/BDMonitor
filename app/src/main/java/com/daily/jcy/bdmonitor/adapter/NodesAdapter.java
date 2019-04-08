@@ -48,7 +48,7 @@ public class NodesAdapter extends RecyclerView.Adapter<NodesAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mList != null ? mList.size() : 0;
+        return mList == null ? 0 : mList.size();
     }
 
     @Override

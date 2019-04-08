@@ -1,11 +1,11 @@
 package com.daily.jcy.bdmonitor.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daily.jcy.bdmonitor.NodeDetails;
 import com.daily.jcy.bdmonitor.R;
 import com.daily.jcy.bdmonitor.adapter.NodesAdapter;
 import com.daily.jcy.bdmonitor.bean.Node;
@@ -38,8 +39,9 @@ public class NodesFragment extends Fragment implements OnItemClickListener {
 
     public static final String TAG = "NodesFragment-11";
     public static final String NODE_URL = "http://172.23.27.193:8088/ws/v1/cluster/nodes";
-    public static final int SET_ADPTER = 10001;
+    public static final int UPDATE_ADAPTER_DATA = 10001;
     public static final String RESPONSE_DATE_NODE = "RESPONSE_DATE_NODE";
+    public static final String TARGET_NODE = "TARGET_NODE";
     private View view;
     private RecyclerView recyclerView;
     private Context mContext;
@@ -98,10 +100,9 @@ public class NodesFragment extends Fragment implements OnItemClickListener {
                     String responseData;
                     if (response.body() != null) {
                         responseData = response.body().string();
-                        Log.i(TAG, "run: " + responseData);
                         ArrayList<Node> nodes = handleJsonData(responseData);
                         Message message = Message.obtain();
-                        message.what = SET_ADPTER;
+                        message.what = UPDATE_ADAPTER_DATA;
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList(RESPONSE_DATE_NODE, nodes);
                         message.setData(bundle);
@@ -135,6 +136,9 @@ public class NodesFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onItemClick(Node node) {
         // TODO: 2019/4/8 跳转后的显示的Node其他信息
+        Intent intent = new Intent(mContext, NodeDetails.class);
+        intent.putExtra(TARGET_NODE, node);
+        startActivity(intent);
     }
 
     static class MyHandler extends Handler {
@@ -149,13 +153,12 @@ public class NodesFragment extends Fragment implements OnItemClickListener {
             super.handleMessage(msg);
             NodesFragment fragment = weakReference.get();
             switch (msg.what) {
-                case SET_ADPTER:
+                case UPDATE_ADAPTER_DATA:
                     ArrayList<Node> nodes = msg.getData().getParcelableArrayList(RESPONSE_DATE_NODE);
                     if (nodes != null) {
                         fragment.adapter.setmList(nodes);
                         fragment.adapter.notifyDataSetChanged();
                     }
-
             }
         }
     }

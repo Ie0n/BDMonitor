@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class Node implements Parcelable {
+
     private String rack, state, id, nodeHostName, version, availMemoryMB, availableVirtualCores, usedVirtualCores;
 
     public Node(String rack, String state, String id, String nodeHostName, String version, String availMemoryMB, String availableVirtualCores, String usedVirtualCores) {
