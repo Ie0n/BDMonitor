@@ -30,7 +30,8 @@ public class CpuFragment extends Fragment {
     public static final String TAG = "content";
     private View view;
     private String content;
-    private TextView state,haState,hadoopVersion,resourceManagerVersion,hadoopVersionBuiltOn,id;
+    private TextView state,haState,hadoopVersion,resourceManagerVersion,hadoopVersionBuiltOn,id
+        ,hadoopBuildVersion,startedOn,resourceManagerBuildVersion;
     private clusterInfo clusterInfo;
     private Handler handler;
 
@@ -71,9 +72,12 @@ public class CpuFragment extends Fragment {
         resourceManagerVersion = view.findViewById(R.id.text_resource_manager_version);
         hadoopVersionBuiltOn = view.findViewById(R.id.text_hadoop_version_built_on);
         id = view.findViewById(R.id.text_id);
+        hadoopBuildVersion = view.findViewById(R.id.text_hadoopBuildVersion);
+        startedOn = view.findViewById(R.id.text_startedOn);
+        resourceManagerBuildVersion = view.findViewById(R.id.text_resourceManagerBuildVersion);
     }
 
-    public void getData(String url) {
+    private void getData(String url) {
         Request request = new Request.Builder().url(url).build();
         final OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(request);
@@ -106,6 +110,9 @@ public class CpuFragment extends Fragment {
                             hadoopVersionBuiltOn.setText(clusterInfo.getHadoopVersionBuiltOn());
                             haState.setText(clusterInfo.getHaState());
                             id.setText(String.valueOf(clusterInfo.getId()));
+                            hadoopBuildVersion.setText(clusterInfo.getHadoopBuildVersion());
+                            startedOn.setText(String.valueOf(clusterInfo.getStartedOn()));
+                            resourceManagerBuildVersion.setText(clusterInfo.getResourceManagerBuildVersion());
                         }
                     });
                 }

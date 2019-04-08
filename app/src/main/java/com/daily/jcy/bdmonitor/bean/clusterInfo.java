@@ -1,13 +1,14 @@
 package com.daily.jcy.bdmonitor.bean;
 
 public class clusterInfo {
-    private Long id;
+    private Long id,startedOn;
     private String state,haState,resourceManagerVersion,resourceManagerBuildVersion,
     resourceManagerVersionBuiltOn,hadoopVersion,hadoopBuildVersion,hadoopVersionBuiltOn;
 
     public clusterInfo(Long id, String state, String haState, String resourceManagerVersion,
                        String resourceManagerBuildVersion, String resourceManagerVersionBuiltOn,
-                       String hadoopVersion, String hadoopBuildVersion, String hadoopVersionBuiltOn){
+                       String hadoopVersion, String hadoopBuildVersion, String hadoopVersionBuiltOn,
+                       Long startedOn){
         this.hadoopBuildVersion = hadoopBuildVersion;
         this.hadoopVersion = hadoopVersion;
         this.hadoopVersionBuiltOn = hadoopVersionBuiltOn;
@@ -17,6 +18,7 @@ public class clusterInfo {
         this.haState = haState;
         this.resourceManagerVersion = resourceManagerVersion;
         this.id = id;
+        this.startedOn = startedOn;
     }
 
     public Long getId() {
@@ -89,5 +91,13 @@ public class clusterInfo {
 
     public void setResourceManagerVersionBuiltOn(String resourceManagerVersionBuiltOn) {
         this.resourceManagerVersionBuiltOn = resourceManagerVersionBuiltOn;
+    }
+
+    public Long getStartedOn() {
+        return startedOn;
+    }
+
+    public void setStartedOn(Long startedOn) {
+        this.startedOn = startedOn;
     }
 }

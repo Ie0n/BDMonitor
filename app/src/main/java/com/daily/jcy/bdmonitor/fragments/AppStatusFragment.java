@@ -2,12 +2,16 @@ package com.daily.jcy.bdmonitor.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.daily.jcy.bdmonitor.R;
+import com.daily.jcy.bdmonitor.bean.AppInfoStatus;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -17,24 +21,40 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class IoFragment extends Fragment {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class AppStatusFragment extends Fragment {
 
     public static final String TAG = "content";
     private View view;
     private PieChart mChart;
     private ArrayList<PieEntry> entries = new ArrayList<>();
+    private static final String URL = "http://172.23.27.193:8088/ws/v1/cluster/metrics";
+    private AppInfoStatus appInfoStatus;
+    private Handler handler;
+    private int killed, failed, running;
 
 
-    public static IoFragment newInstance(String content) {
-        IoFragment fragment = new IoFragment();
+    public static AppStatusFragment newInstance(String content) {
+        AppStatusFragment fragment = new AppStatusFragment();
         Bundle args = new Bundle();
         args.putString(TAG, content);
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,31 +67,77 @@ public class IoFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_io, container, false);
         init();
-        setData();
+
+
         return view;
     }
-    private void init(){
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        handler = new Handler();
+        getData();
+
+    }
+
+    private void getData() {
+        Request request = new Request.Builder().url(AppStatusFragment.URL).build();
+        final OkHttpClient client = new OkHttpClient();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("fail", "获取数据失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.body() != null && response.isSuccessful()) {
+
+                    String result = response.body().string();
+                    Log.d("Result: ", result);
+
+                    JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+                    JsonObject s = jsonObject.get("clusterMetrics").getAsJsonObject();
+
+                    Gson gson = new Gson();
+
+                    appInfoStatus = gson.fromJson(s, new TypeToken<AppInfoStatus>() {}.getType());
+
+                    killed = appInfoStatus.getAppsKilled();
+                    failed = appInfoStatus.getAppsFailed();
+                    running = appInfoStatus.getAppsRunning();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            setData();
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    private void init() {
         mChart = view.findViewById(R.id.chart);
     }
 
     private void setData() {
 
         entries.clear();
-        entries.add(new PieEntry(10, "0-10"));
-        entries.add(new PieEntry(12, "10-20"));
-        entries.add(new PieEntry(17, "20-30"));
-        entries.add(new PieEntry(20, "30-40"));
-        entries.add(new PieEntry(22, "40-50"));
-        entries.add(new PieEntry(25, "50-60"));
+        entries.add(new PieEntry(running, "appsRunning"));
+        entries.add(new PieEntry(failed, "appsFailed"));
+        entries.add(new PieEntry(killed, "appsKilled"));
 
-        mChart.setUsePercentValues(true); //设置是否显示数据实体(百分比，true:以下属性才有意义)
+        mChart.setUsePercentValues(false); //设置是否显示数据实体(百分比，true:以下属性才有意义)
         mChart.getDescription().setEnabled(false);
         mChart.setExtraOffsets(5, 5, 5, 5);//饼形图上下左右边距
 
         mChart.setDragDecelerationFrictionCoef(0.95f);//设置pieChart图表转动阻力摩擦系数[0,1]
 
         //mChart.setCenterTextTypeface(mTfLight);//设置所有DataSet内数据实体（百分比）的文本字体样式
-        mChart.setCenterText("I/O利用率");//设置PieChart内部圆文字的内容
+        mChart.setCenterText("App状态占比");//设置PieChart内部圆文字的内容
 
         mChart.setDrawHoleEnabled(true);//是否显示PieChart内部圆环(true:下面属性才有意义)
         mChart.setHoleColor(Color.WHITE);//设置PieChart内部圆的颜色
@@ -104,7 +170,7 @@ public class IoFragment extends Fragment {
         // entry label styling
         mChart.setEntryLabelColor(Color.WHITE);//设置pieChart图表文本字体颜色
 //        mChart.setEntryLabelTypeface(mTfRegular);//设置pieChart图表文本字体样式
-        mChart.setEntryLabelTextSize(12f);//设置pieChart图表文本字体大小
+        mChart.setEntryLabelTextSize(16f);//设置pieChart图表文本字体大小
 
         PieDataSet dataSet = new PieDataSet(entries, "数据说明");
 
@@ -121,12 +187,6 @@ public class IoFragment extends Fragment {
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
 
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
         for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
 
@@ -136,13 +196,11 @@ public class IoFragment extends Fragment {
         colors.add(ColorTemplate.getHoloBlue());
 
         dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
 
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
+        data.setValueTextSize(15f);
         data.setValueTextColor(Color.WHITE);
-//        data.setValueTypeface(mTfLight);
         mChart.setData(data);
 
         // undo all highlights

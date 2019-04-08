@@ -14,9 +14,9 @@ import android.view.MenuItem;
 
 import com.daily.jcy.bdmonitor.fragments.CpuFragment;
 import com.daily.jcy.bdmonitor.fragments.InternetFragment;
-import com.daily.jcy.bdmonitor.fragments.IoFragment;
+import com.daily.jcy.bdmonitor.fragments.AppStatusFragment;
 import com.daily.jcy.bdmonitor.fragments.LogFragment;
-import com.daily.jcy.bdmonitor.fragments.MemoFragment;
+import com.daily.jcy.bdmonitor.fragments.NodeOccupyFragment;
 import com.daily.jcy.bdmonitor.fragments.NodesFragment;
 
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity
     private void initView(){
         fragments = new ArrayList<>();
         fragments.add(CpuFragment.newInstance("Cpu"));
-        fragments.add(IoFragment.newInstance("Io"));
-        fragments.add(MemoFragment.newInstance("Memo"));
+        fragments.add(AppStatusFragment.newInstance("Io"));
+        fragments.add(NodeOccupyFragment.newInstance("Memo"));
         fragments.add(NodesFragment.newInstance("Task"));
         fragments.add(InternetFragment.newInstance("Internet"));
         fragments.add(LogFragment.newInstance("Log"));
