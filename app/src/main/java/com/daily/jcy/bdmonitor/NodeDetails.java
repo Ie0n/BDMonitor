@@ -35,6 +35,10 @@ public class NodeDetails extends AppCompatActivity {
         TextView textAvailMemoryMB = findViewById(R.id.text_availMemoryMB);
         TextView textAvailableVirtualCores = findViewById(R.id.text_availableVirtualCores);
         TextView textUsedVirtualCores = findViewById(R.id.text_usedVirtualCores);
+        TextView textNodeHTTPAddress = findViewById(R.id.text_nodeHTTPAddress);
+        TextView textLastHealthUpdate = findViewById(R.id.text_lastHealthUpdate);
+        TextView textNumContainers = findViewById(R.id.text_numContainers);
+        TextView textUsedMemoryMB = findViewById(R.id.text_usedMemoryMB);
         if (mNode != null) {
             textRack.setText(mNode.getRack());
             textState.setText(mNode.getState());
@@ -44,6 +48,10 @@ public class NodeDetails extends AppCompatActivity {
             textAvailMemoryMB.setText(mNode.getAvailMemoryMB());
             textAvailableVirtualCores.setText(mNode.getAvailableVirtualCores());
             textUsedVirtualCores.setText(mNode.getUsedVirtualCores());
+            textNodeHTTPAddress.setText(mNode.getNodeHTTPAddress());
+            textLastHealthUpdate.setText(mNode.getLastHealthUpdate());
+            textNumContainers.setText(mNode.getNumContainers());
+            textUsedMemoryMB.setText(mNode.getUsedMemoryMB());
         }
 
     }

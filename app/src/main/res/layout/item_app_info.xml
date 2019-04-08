@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_margin="10dp"
+    android:translationZ="3dp">
+
+    <LinearLayout
+        android:layout_marginStart="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:text="AppState: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:id="@+id/text_state"
+            android:layout_width="0dp"
+            android:layout_weight="1.2"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"/>
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="AppType: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_type"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:text="*"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="AppCount: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_count"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"/>
+
+    </LinearLayout>
+
+
+</android.support.design.card.MaterialCardView>

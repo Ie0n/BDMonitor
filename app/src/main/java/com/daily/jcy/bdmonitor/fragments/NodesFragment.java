@@ -45,7 +45,6 @@ public class NodesFragment extends Fragment implements OnItemClickListener {
     private View view;
     private RecyclerView recyclerView;
     private Context mContext;
-    private List<Node> nodeList;
     private OkHttpClient client;
     private MyHandler handler;
     private NodesAdapter adapter;
