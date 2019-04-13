@@ -7,7 +7,8 @@ import androidx.annotation.NonNull;
 
 public class Node implements Parcelable {
 
-    private String rack, state, id, nodeHostName,nodeHTTPAddress,lastHealthUpdate, version, numContainers,usedMemoryMB,availMemoryMB, availableVirtualCores, usedVirtualCores;
+    private String rack, state, id, nodeHostName,nodeHTTPAddress,lastHealthUpdate, version,
+            numContainers,usedMemoryMB,availMemoryMB, availableVirtualCores, usedVirtualCores;
 
 
     public Node(String rack, String state, String id, String nodeHostName, String nodeHTTPAddress,

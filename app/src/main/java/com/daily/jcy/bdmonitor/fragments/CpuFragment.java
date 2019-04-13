@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daily.jcy.bdmonitor.PublicData;
 import com.daily.jcy.bdmonitor.R;
 import com.daily.jcy.bdmonitor.bean.clusterInfo;
 import com.google.gson.Gson;
@@ -30,6 +31,7 @@ public class CpuFragment extends Fragment {
     public static final String TAG = "content";
     private View view;
     private String content;
+    private static final String INFO = "info";
     private TextView state,haState,hadoopVersion,resourceManagerVersion,hadoopVersionBuiltOn,id
         ,hadoopBuildVersion,startedOn,resourceManagerBuildVersion;
     private clusterInfo clusterInfo;
@@ -60,7 +62,8 @@ public class CpuFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getData("http://172.23.27.193:8088/ws/v1/cluster/info");
+        PublicData publicData = PublicData.getInstance();
+        getData(publicData.con(INFO));
         handler = new Handler();
 
     }
