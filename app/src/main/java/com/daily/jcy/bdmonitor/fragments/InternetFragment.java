@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.daily.jcy.bdmonitor.R;
+import com.daily.jcy.bdmonitor.Trson;
 import com.daily.jcy.bdmonitor.adapter.AppInfoAdapter;
 import com.daily.jcy.bdmonitor.bean.AppInfo;
+import com.daily.jcy.bdmonitor.bean.InterBean;
 import com.daily.jcy.bdmonitor.bean.Node;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -26,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
@@ -36,7 +40,7 @@ public class InternetFragment extends Fragment {
     public static final String TAG = "content";
     public static final int UPDATE_ADAPTER_DATA = 10001;
     public static final String RESPONSE_DATE_APP_INFO = "RESPONSE_DATE_APP_INFO";
-    public static final String APP_INFO_URL = "http://172.23.27.193:8088/ws/v1/cluster/appstatistics";
+    public static final String APP_INFO_URL = "http://172.23.27.193:8088/ws/v1/cluster/apps";
     private View view;
     private String content;
     private Context mContext;
@@ -75,53 +79,42 @@ public class InternetFragment extends Fragment {
         init(view);
         return view;
     }
-    private void init(View view){
+
+    private void init(View view) {
         recyclerView = view.findViewById(R.id.internet_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        adapter = new AppInfoAdapter(null, mContext);
+        adapter = new AppInfoAdapter(null);
         recyclerView.setAdapter(adapter);
         getData(APP_INFO_URL);
     }
 
     private void getData(final String url) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                client = new OkHttpClient();
-                Request request = new Request.Builder().url(url).build();
-                try {
-                    Response response = client.newCall(request).execute();
-                    String responseData;
-                    if (response.body() != null) {
-                        responseData = response.body().string();
-                        Log.i(TAG, "run: " + responseData);
-                        ArrayList<AppInfo> appInfos = handleJsonData(responseData);
-                        Message message = Message.obtain();
-                        message.what = UPDATE_ADAPTER_DATA;
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(RESPONSE_DATE_APP_INFO, appInfos);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).build();
+            try {
+                Response response = client.newCall(request).execute();
+                String responseData;
+                if (response.body() != null) {
+                    responseData = response.body().string();
+                    Log.i(TAG, "run: " + responseData);
+                    InterBean interBean = handleJsonData(responseData);
+                    Message message = Message.obtain();
+                    message.what = UPDATE_ADAPTER_DATA;
+                    message.obj = interBean;
+                    handler.sendMessage(message);
                 }
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }).start();
     }
 
-    private ArrayList<AppInfo> handleJsonData(String responseData) {
-        JsonObject jsonObject = new JsonParser().parse(responseData).getAsJsonObject();
-        JsonArray jsonElements = jsonObject.getAsJsonObject("appStatInfo").getAsJsonArray("statItem");
-        Gson gson = new Gson();
-        ArrayList<AppInfo> appInfos = new ArrayList<>();
-        for (JsonElement element : jsonElements) {
-            AppInfo appInfo = gson.fromJson(element, new TypeToken<AppInfo>() {
-            }.getType());
-            appInfos.add(appInfo);
-        }
-        return appInfos;
+    private InterBean handleJsonData(String responseData) {
+        InterBean interBean = new InterBean();
+        Trson.getTrson().factoryBean(responseData,interBean);
+        return interBean;
     }
 
     static class MyHandler extends Handler {
@@ -138,9 +131,8 @@ public class InternetFragment extends Fragment {
             InternetFragment fragment = weakReference.get();
             switch (msg.what) {
                 case UPDATE_ADAPTER_DATA:
-                    ArrayList<AppInfo> appInfos = msg.getData().getParcelableArrayList(RESPONSE_DATE_APP_INFO);
-                    if (appInfos != null) {
-                        fragment.adapter.setData(appInfos);
+                    if (msg.obj != null) {
+                        fragment.adapter.setData((InterBean)msg.obj);
                         fragment.adapter.notifyDataSetChanged();
                     }
                     break;

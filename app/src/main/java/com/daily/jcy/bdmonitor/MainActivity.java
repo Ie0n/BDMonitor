@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         initView();
+        initNodeCheckService();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,6 +116,14 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * 初始化节点检查服务
+     */
+    private void initNodeCheckService() {
+        Intent intent = new Intent(this, NodeCheckService.class);
+        startService(intent);
     }
 
 }

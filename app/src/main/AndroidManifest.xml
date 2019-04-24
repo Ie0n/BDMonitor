@@ -11,7 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NodeDetails"></activity>
+        <activity android:name=".BDActivity"></activity>
+
+        <service
+            android:name=".NodeCheckService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".NodeDetails" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
