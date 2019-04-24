@@ -73,21 +73,22 @@ public class NodeCheckService extends Service {
         initNotification();
         new Thread(() -> {
             while (true) {
-                String date = sendRequeestWithOkhttp("http://172.23.27.193:8088/ws/v1/cluster/metrics");
-                String s = sendRequeestWithOkhttp("http://172.23.27.193:8088/ws/v1/cluster/apps");
+                String data = sendRequeestWithOkhttp("http://172.23.27.193:8088/ws/v1/cluster/metrics");
                 Gson gson = new Gson();
-                NodeCheck nodeCheck = gson.fromJson(date, new TypeToken<NodeCheck>() {
+                NodeCheck nodeCheck = gson.fromJson(data, new TypeToken<NodeCheck>() {
                 }.getType());
-                lost_node = nodeCheck.getClusterMetrics().getLostNodes();
-                unhealthy_node = nodeCheck.getClusterMetrics().getUnhealthyNodes();
-                if (unhealthy_node != 0) {
-                    Message message = new Message();
-                    message.what = UNHEALTHY_NODE;
-                    handler.sendMessage(message);
-                } else if (lost_node != 0) {
-                    Message message = new Message();
-                    message.what = LOST_NODE;
-                    handler.sendMessage(message);
+                if (nodeCheck != null) {
+                    lost_node = nodeCheck.getClusterMetrics().getLostNodes();
+                    unhealthy_node = nodeCheck.getClusterMetrics().getUnhealthyNodes();
+                    if (unhealthy_node != 0) {
+                        Message message = new Message();
+                        message.what = UNHEALTHY_NODE;
+                        handler.sendMessage(message);
+                    } else if (lost_node != 0) {
+                        Message message = new Message();
+                        message.what = LOST_NODE;
+                        handler.sendMessage(message);
+                    }
                 }
                 try {
                     Thread.sleep(1000 * checkFrequency);
